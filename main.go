@@ -3,27 +3,8 @@ package main
 import (
 	"fmt"
 	"regexp"
+	"strings"
 )
-
-func intersect(a, b []string) []string {
-	var r []string
-
-	for _, i := range a {
-		exists := false
-
-		for _, j := range b {
-			if i == j {
-				exists = true
-			}
-		}
-
-		if exists == true {
-			r = append(r, i)
-		}
-	}
-
-	return r
-}
 
 func verify(regex string, a, b []string) bool {
 	r, err := regexp.Compile(regex)
@@ -62,17 +43,61 @@ func verify(regex string, a, b []string) bool {
 	return result
 }
 
-func findregex(winners, losers []string) {
-	/*
-	   pool = candidate_components(winners, losers)
-	   cover = []
-	   while winners:
-	       best = max(pool, key=lambda c: 3*len(matches(c, winners)) - len(c))
-	       cover.append(best)
-	       pool.remove(best)
-	       winners = winners - matches(best, winners)
-	   return '|'.join(cover)
-	*/
+func findregex(winners, losers []string) string {
+	pool := regex_components(winners, losers)
+	var cover []string
+
+	for len(winners) > 0 {
+		max := 0
+		max_loc := 0
+
+		for i, c := range pool {
+			v := 3*len(matches(c, winners)) - len(c)
+
+			if v > max {
+				max = v
+				max_loc = i
+			}
+		}
+
+		best := pool[max_loc]
+		cover = append(cover, best)
+
+		////
+
+		var leftover []string
+		best_matches := matches(best, winners)
+
+		for _, winner := range winners {
+			found := false
+
+			for _, matched_winner := range best_matches {
+				if winner == matched_winner {
+					found = true
+				}
+			}
+
+			if found == false {
+				leftover = append(leftover, winner)
+			}
+		}
+
+		winners = leftover
+
+		////
+
+		var leftoverpool []string
+
+		for _, c := range pool {
+			if len(matches(c, winners)) > 0 {
+				leftoverpool = append(leftoverpool, c)
+			}
+		}
+
+		pool = leftoverpool
+	}
+
+	return strings.Join(cover, "|")
 }
 
 func regex_components(winners, losers []string) []string {

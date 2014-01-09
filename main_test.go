@@ -105,7 +105,6 @@ func TestSubParts(t *testing.T) {
 }
 
 func TestCandidateComponents(t *testing.T) {
-
 	tests := []struct {
 		winners  []string
 		losers   []string
@@ -127,6 +126,40 @@ func TestCandidateComponents(t *testing.T) {
 				t.Errorf("expected: %v actual: %v", test.expected, actual)
 				break
 			}
+		}
+	}
+}
+
+func TestVerify(t *testing.T) {
+	if verify("a+b+", []string{"ab", "aaabb"}, []string{"a", "bee", "a b"}) == false {
+		t.Errorf("expected: true actual: false")
+	}
+}
+
+func TestFindRegex(t *testing.T) {
+	boys := []string{"jacob", "mason", "ethan", "noah", "william", "liam", "jayden", "michael", "alexander", "aiden"}
+	girls := []string{"sophia", "emma", "isabella", "olivia", "ava", "emily", "abigail", "mia", "madison", "elizabeth"}
+
+	nfl_in := []string{"colts", "saints", "chargers", "49ers", "seahawks", "patriots", "panthers", "broncos", "chiefs", "eagles", "bengals", "packers"}
+	nfl_out := []string{"jets", "dolphins", "bills", "steelers", "ravens", "browns", "titans", "jaguars", "texans", "raiders", "cowboys", "giants", "redskins", "bears", "lions", "vikings", "falcons", "buccaneers", "cardinals", "rams"}
+
+	tests := []struct {
+		winners  []string
+		losers   []string
+		expected string
+	}{
+		{[]string{"ahahah", "ciao"}, []string{"ahaha", "bye"}, "a.$"},
+		{boys, girls, "e.$|a.$|a.o"},
+		{girls, boys, "a$|^..i|ad"},
+		{nfl_in, nfl_out, "^p|g..s|4|nc|lt|se|ef|sa"},
+		{nfl_out, nfl_in, "ns|^.i|d|j|ee|y|m|ars"},
+	}
+
+	for _, test := range tests {
+		actual := findregex(test.winners, test.losers)
+
+		if actual != test.expected {
+			t.Errorf("expected: %v actual: %v", test.expected, actual)
 		}
 	}
 }
