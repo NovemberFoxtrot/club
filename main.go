@@ -98,8 +98,6 @@ func regex_components(winners, losers []string) []string {
 }
 
 func subparts(word string) []string {
-	fmt.Println(word)
-
 	if word == "" {
 		return []string{""}
 	}
