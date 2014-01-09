@@ -75,43 +75,31 @@ func findregex(winners, losers []string) {
 	*/
 }
 
-func candidate_components(winners, losers []string) []string {
-	parts := mappend(dotify, mappend(subparts, winners))
-	// parts := set(mappend(dotify, mappend(subparts, winners)))
-	// wholes = {'^'+winner+'$' for winner in winners}
-
+func regex_components(winners, losers []string) []string {
+	var parts []string
 	var wholes []string
 
 	for _, winner := range winners {
 		wholes = append(wholes, "^"+winner+"$")
+		parts = append(parts, "^"+winner+"$")
 	}
 
-	for _, p := range parts {
-		if m := matches(p, losers); len(m) > 0 && m[0] != "" {
-			fmt.Println(m)
+	for _, w := range wholes {
+		for _, p := range subparts(w) {
+			for _, d := range dotify(p) {
+				if m := matches(d, losers); len(m) == 0 {
+					parts = append(parts, d)
+				}
+			}
 		}
 	}
-
-	// return wholes | {p for p in parts if not matches(p, losers)}
 
 	return parts
 }
 
-type mapper func(string) []string
-
-func mappend(function mapper, sequences []string) []string {
-	var results []string
-
-	for _, sequence := range sequences {
-		for _, result := range function(sequence) {
-			results = append(results, result)
-		}
-	}
-
-	return results
-}
-
 func subparts(word string) []string {
+	fmt.Println(word)
+
 	if word == "" {
 		return []string{""}
 	}

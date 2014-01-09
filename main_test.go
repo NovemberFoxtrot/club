@@ -104,17 +104,18 @@ func TestSubParts(t *testing.T) {
 	}
 }
 
-func TestMappend(t *testing.T) {
+func TestCandidateComponents(t *testing.T) {
+
 	tests := []struct {
-		function mapper
-		input    []string
+		winners  []string
+		losers   []string
 		expected []string
 	}{
-		{dotify, []string{"abc", "123", "WXYZ"}, []string{"abc", "ab.", "a.c", "a..", ".bc", ".b.", "..c", "...", "123", "12.", "1.3", "1..", ".23", ".2.", "..3", "...", "WXYZ", "WXY.", "WX.Z", "WX..", "W.YZ", "W.Y.", "W..Z", "W...", ".XYZ", ".XY.", ".X.Z", ".X..", "..YZ", "..Y.", "...Z", "...."}},
+		{[]string{"win"}, []string{"losers", "bin", "won"}, []string{"^win$", "wi", "^wi", "win", "wi.", "^win", "^wi.", "win$", "wi.$"}},
 	}
 
 	for _, test := range tests {
-		actual := mappend(test.function, test.input)
+		actual := regex_components(test.winners, test.losers)
 
 		if len(actual) != len(test.expected) {
 			t.Errorf("expected: %v actual: %v", test.expected, actual)
@@ -128,11 +129,4 @@ func TestMappend(t *testing.T) {
 			}
 		}
 	}
-}
-
-func TestCandidateComponents(t *testing.T) {
-	actual := candidate_components([]string{"this"}, []string{"losers", "something", "history"})
-	t.Errorf("%v", actual)
-
-	// == {'th.s', '^this$', '..is', 'this', 't.is', 't..s', '.his', '.h.s'}
 }
