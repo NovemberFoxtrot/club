@@ -75,12 +75,26 @@ func findregex(winners, losers []string) {
 	*/
 }
 
-func candidate_components(winners, losers []string) {
-	/*
-	   parts = set(mappend(dotify, mappend(subparts, winners)))
-	   wholes = {'^'+winner+'$' for winner in winners}
-	   return wholes | {p for p in parts if not matches(p, losers)}
-	*/
+func candidate_components(winners, losers []string) []string {
+	parts := mappend(dotify, mappend(subparts, winners))
+	// parts := set(mappend(dotify, mappend(subparts, winners)))
+	// wholes = {'^'+winner+'$' for winner in winners}
+
+	var wholes []string
+
+	for _, winner := range winners {
+		wholes = append(wholes, "^" + winner + "$")
+	}
+
+	for _, p := range parts {
+		if m := matches(p, losers); len(m) > 0 && m[0] != "" {
+			fmt.Println(m)
+		}
+	}
+
+	// return wholes | {p for p in parts if not matches(p, losers)}
+
+	return parts
 }
 
 type mapper func(string) []string
@@ -95,8 +109,6 @@ func mappend(function mapper, sequences []string) []string {
 	}
 
 	return results
-
-	// return [item for result in results for item in result]
 }
 
 func subparts(word string) []string {
@@ -125,15 +137,21 @@ func dotify(part string) []string {
 
 	var results []string
 
-	for _, c := range []string{".", string(part[0])} {
-		for i, rest := range dotify(part[1:]) {
-			results = append(results, "")
-			copy(results[i+1:], results[i:])
-			results[i] = c + rest
+	for _, c := range replacements(string(part[0])) {
+		for _, rest := range dotify(part[1:]) {
+			results = append(results, string(c) + rest)
 		}
 	}
 
 	return results
+}
+
+func replacements(char string) string {
+	if char == "^" || char == "$" {
+		return char
+	}
+
+	return char + "."
 }
 
 func matches(regex string, strings []string) []string {
@@ -152,12 +170,6 @@ func matches(regex string, strings []string) []string {
 	}
 
 	return results
-}
-
-func test() {
-	/*
-	   assert candidate_components({'this'}, {'losers', 'something', 'history'}) == {'th.s', '^this$', '..is', 'this', 't.is', 't..s', '.his', '.h.s'}
-	*/
 }
 
 func main() {

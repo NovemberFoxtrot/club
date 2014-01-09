@@ -31,6 +31,25 @@ func TestMatches(t *testing.T) {
 	}
 }
 
+func TestReplacements(t *testing.T) {
+	tests := []struct {
+		input string
+		expected string
+	}{
+		{"x", "x."},
+		{"^", "^"},
+		{"$", "$"},
+	}
+
+	for _, test := range tests {
+		actual := replacements(test.input)
+
+		if actual != test.expected {
+			t.Errorf("expected: %v actual: %v", test.expected, actual)
+		}
+	}
+}
+
 func TestDotify(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -38,6 +57,7 @@ func TestDotify(t *testing.T) {
 	}{
 		{"", []string{""}},
 		{"it", []string{"it", "i.", ".t", ".."}},
+		{"^it$", []string{"^it$", "^i.$", "^.t$", "^..$"}},
 		{"this", []string{"this", "thi.", "th.s", "th..", "t.is", "t.i.", "t..s", "t...", ".his", ".hi.", ".h.s", ".h..", "..is", "..i.", "...s", "...."}},
 	}
 
@@ -108,4 +128,11 @@ func TestMappend(t *testing.T) {
 			}
 		}
 	}
+}
+
+func TestCandidateComponents(t *testing.T) {
+	actual := candidate_components([]string{"this"}, []string{"losers", "something", "history"})
+	t.Errorf("%v", actual)
+
+	// == {'th.s', '^this$', '..is', 'this', 't.is', 't..s', '.his', '.h.s'}
 }
