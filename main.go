@@ -83,7 +83,7 @@ func candidate_components(winners, losers []string) []string {
 	var wholes []string
 
 	for _, winner := range winners {
-		wholes = append(wholes, "^" + winner + "$")
+		wholes = append(wholes, "^"+winner+"$")
 	}
 
 	for _, p := range parts {
@@ -139,7 +139,7 @@ func dotify(part string) []string {
 
 	for _, c := range replacements(string(part[0])) {
 		for _, rest := range dotify(part[1:]) {
-			results = append(results, string(c) + rest)
+			results = append(results, string(c)+rest)
 		}
 	}
 

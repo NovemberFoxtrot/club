@@ -33,7 +33,7 @@ func TestMatches(t *testing.T) {
 
 func TestReplacements(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected string
 	}{
 		{"x", "x."},
