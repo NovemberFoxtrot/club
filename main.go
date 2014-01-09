@@ -88,8 +88,23 @@ func candidate_components(winners, losers []string) {
 // return [item for result in results for item in result]
 //}
 
-func subparts(word string) {
-	//  return set(word[i:i+n] for i in range(len(word)) for n in (1, 2, 3, 4))
+func subparts(word string) []string {
+	if word == "" {
+		return []string{""}
+	}
+
+	var results []string
+
+	for _, n := range []int{1, 2, 3, 4} {
+		for i := 0; i < len(word); i++ {
+			if i+n > len(word) {
+				continue
+			}
+			results = append(results, word[i:i+n])
+		}
+	}
+
+	return results
 }
 
 func dotify(part string) []string {
@@ -103,7 +118,7 @@ func dotify(part string) []string {
 		for i, rest := range dotify(part[1:]) {
 			results = append(results, "")
 			copy(results[i+1:], results[i:])
-			results[i] = c+rest
+			results[i] = c + rest
 		}
 	}
 
@@ -130,8 +145,6 @@ func matches(regex string, strings []string) []string {
 
 func test() {
 	/*
-	   assert subparts('the')                                                    == {'t', 'h', 'e', 'th', 'he', 'the'}
-	   assert subparts('this')                                                   == {'t', 'h', 'i', 's', 'th', 'hi', 'is', 'thi', 'his', 'this'}
 	   assert candidate_components({'this'}, {'losers', 'something', 'history'}) == {'th.s', '^this$', '..is', 'this', 't.is', 't..s', '.his', '.h.s'}
 	   assert mappend(reversed, ['abc', '123', 'WXYZ'])                          == ['c', 'b', 'a', '3', '2', '1', 'Z', 'Y', 'X', 'W']
 	*/

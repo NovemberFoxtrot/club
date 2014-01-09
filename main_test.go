@@ -57,3 +57,29 @@ func TestDotify(t *testing.T) {
 		}
 	}
 }
+
+func TestSubParts(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected []string
+	}{
+		{"the", []string{"t", "h", "e", "th", "he", "the"}},
+		{"this", []string{"t", "h", "i", "s", "th", "hi", "is", "thi", "his", "this"}},
+	}
+
+	for _, test := range tests {
+		actual := subparts(test.input)
+
+		if len(actual) != len(test.expected) {
+			t.Errorf("expected: %v actual: %v", test.expected, actual)
+			break
+		}
+
+		for i := range test.expected {
+			if actual[i] != test.expected[i] {
+				t.Errorf("expected: %v actual: %v", test.expected, actual)
+				break
+			}
+		}
+	}
+}
