@@ -83,3 +83,29 @@ func TestSubParts(t *testing.T) {
 		}
 	}
 }
+
+func TestMappend(t *testing.T) {
+	tests := []struct {
+		function mapper
+		input    []string
+		expected []string
+	}{
+		{dotify, []string{"abc", "123", "WXYZ"}, []string{"abc", "ab.", "a.c", "a..", ".bc", ".b.", "..c", "...", "123", "12.", "1.3", "1..", ".23", ".2.", "..3", "...", "WXYZ", "WXY.", "WX.Z", "WX..", "W.YZ", "W.Y.", "W..Z", "W...", ".XYZ", ".XY.", ".X.Z", ".X..", "..YZ", "..Y.", "...Z", "...."}},
+	}
+
+	for _, test := range tests {
+		actual := mappend(test.function, test.input)
+
+		if len(actual) != len(test.expected) {
+			t.Errorf("expected: %v actual: %v", test.expected, actual)
+			break
+		}
+
+		for i := range test.expected {
+			if actual[i] != test.expected[i] {
+				t.Errorf("expected: %v actual: %v", test.expected, actual)
+				break
+			}
+		}
+	}
+}

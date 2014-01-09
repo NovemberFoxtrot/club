@@ -83,10 +83,21 @@ func candidate_components(winners, losers []string) {
 	*/
 }
 
-//func mappend(function, *sequences []string) {
-// results = map(function, *sequences)
-// return [item for result in results for item in result]
-//}
+type mapper func(string) []string
+
+func mappend(function mapper, sequences []string) []string {
+	var results []string
+
+	for _, sequence := range sequences {
+		for _, result := range function(sequence) {
+			results = append(results, result)
+		}
+	}
+
+	return results
+
+	// return [item for result in results for item in result]
+}
 
 func subparts(word string) []string {
 	if word == "" {
@@ -146,7 +157,6 @@ func matches(regex string, strings []string) []string {
 func test() {
 	/*
 	   assert candidate_components({'this'}, {'losers', 'something', 'history'}) == {'th.s', '^this$', '..is', 'this', 't.is', 't..s', '.his', '.h.s'}
-	   assert mappend(reversed, ['abc', '123', 'WXYZ'])                          == ['c', 'b', 'a', '3', '2', '1', 'Z', 'Y', 'X', 'W']
 	*/
 }
 
