@@ -2,7 +2,6 @@ package main
 
 import (
 	"testing"
-	"fmt"
 )
 
 func TestMatches(t *testing.T) {
@@ -87,7 +86,6 @@ func TestSubParts(t *testing.T) {
 		{"^it$", []string{"^", "i", "t", "$", "^i", "it", "t$", "^it", "it$", "^it$"}},
 		{"the", []string{"t", "h", "e", "th", "he", "the"}},
 		{"this", []string{"t", "h", "i", "s", "th", "hi", "is", "thi", "his", "this"}},
-		// {"^win$", []string{"^win", "$", "i", "win", "n$", "^wi", "wi", "^w", "w", "in", "in$", "n", "win$", "^"}},
 		{"^win$", []string{"^", "w", "i", "n", "$", "^w", "wi", "in", "n$", "^wi", "win", "in$", "^win", "win$"}},
 	}
 
@@ -114,7 +112,6 @@ func TestRegexComponents(t *testing.T) {
 		losers   []string
 		expected []string
 	}{
-		// {[]string{"win"}, []string{"losers", "bin", "won"}, []string{"^win$", "^win", "^wi.", "wi.", "wi", "^wi", "win$", "win", "wi.$"}},
 		{[]string{"win"}, []string{"losers", "bin", "won"}, []string{"^win$", "wi", "^wi", "win", "wi.", "^win", "^wi.", "win$", "wi.$"}},
 	}
 
@@ -135,12 +132,6 @@ func TestRegexComponents(t *testing.T) {
 	}
 }
 
-func TestVerify(t *testing.T) {
-	if verify("a+b+", []string{"ab", "aaabb"}, []string{"a", "bee", "a b"}) == false {
-		t.Errorf("expected: true actual: false")
-	}
-}
-
 func TestFindRegex(t *testing.T) {
 	boys := []string{"jacob", "mason", "ethan", "noah", "william", "liam", "jayden", "michael", "alexander", "aiden"}
 	girls := []string{"sophia", "emma", "isabella", "olivia", "ava", "emily", "abigail", "mia", "madison", "elizabeth"}
@@ -148,20 +139,16 @@ func TestFindRegex(t *testing.T) {
 	nfl_in := []string{"colts", "saints", "chargers", "49ers", "seahawks", "patriots", "panthers", "broncos", "chiefs", "eagles", "bengals", "packers"}
 	nfl_out := []string{"jets", "dolphins", "bills", "steelers", "ravens", "browns", "titans", "jaguars", "texans", "raiders", "cowboys", "giants", "redskins", "bears", "lions", "vikings", "falcons", "buccaneers", "cardinals", "rams"}
 
-	for _, v := range nfl_out {
-	fmt.Println(v)
-	}
-
 	tests := []struct {
 		winners  []string
 		losers   []string
 		expected string
 	}{
 		{[]string{"ahahah", "ciao"}, []string{"ahaha", "bye"}, "a.$"},
-		{boys, girls, "e.$|a.$|a.o"},
-		{girls, boys, "a$|^..i|ad"},
-		{nfl_in, nfl_out, "^p|g..s|4|nc|lt|se|ef|sa"},
-		{nfl_out, nfl_in, "ns|^.i|d|j|ee|y|m|ars"},
+		{boys, girls, "a.$|e.$|a.o"},
+		{girls, boys, "a$|^..i|is"},
+		{nfl_in, nfl_out, "^p|g..s|4|lt|sa|ch|ha|nc"},
+		{nfl_out, nfl_in, "ns|^.i|j|d|ee|y|m|^bears$"},
 	}
 
 	for _, test := range tests {

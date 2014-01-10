@@ -7,43 +7,6 @@ import (
 	"strings"
 )
 
-func verify(regex string, a, b []string) bool {
-	r, err := regexp.Compile(regex)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	var unmatchedA []string
-	var matchedB []string
-
-	for _, i := range a {
-		if r.MatchString(i) == false {
-			unmatchedA = append(unmatchedA, i)
-		}
-	}
-
-	for _, i := range b {
-		if r.MatchString(i) == true {
-			matchedB = append(matchedB, i)
-		}
-	}
-
-	result := true
-
-	if len(unmatchedA) > 0 {
-		result = false
-		fmt.Println("Missed ", unmatchedA)
-	}
-
-	if len(matchedB) > 0 {
-		result = false
-		fmt.Println("Should have missed ", matchedB)
-	}
-
-	return result
-}
-
 func findregex(winners, losers []string) string {
 	pool := regex_components(winners, losers)
 	var cover []string
@@ -64,8 +27,6 @@ func findregex(winners, losers []string) string {
 		best := pool[max_loc]
 		cover = append(cover, best)
 
-		////
-
 		var leftover []string
 		best_matches := matches(best, winners)
 
@@ -84,8 +45,6 @@ func findregex(winners, losers []string) string {
 		}
 
 		winners = leftover
-
-		////
 
 		var leftoverpool []string
 
@@ -127,10 +86,6 @@ func regex_components(winners, losers []string) []string {
 }
 
 func subparts(word string) []string {
-	if word == "" {
-		return []string{""}
-	}
-
 	var results []string
 
 	for n := 1; n <= 4; n++ {
@@ -189,8 +144,8 @@ func matches(regex string, strings []string) []string {
 }
 
 func main() {
-	var include = flag.String("include", "a b c", "what the regexp should match")
-	var exclude = flag.String("exclude", "x y z", "what the regexp should not match")
+	var include = flag.String("include", "a,b,c", "what the regexp should match")
+	var exclude = flag.String("exclude", "x,y,z", "what the regexp should not match")
 
 	flag.Parse()
 
