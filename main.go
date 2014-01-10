@@ -7,16 +7,16 @@ import (
 	"strings"
 )
 
-func findregex(winners, losers []string) string {
-	pool := regex_components(winners, losers)
+func findregex(includes, excludes []string) string {
+	pool := regex_components(includes, excludes)
 	var cover []string
 
-	for len(winners) > 0 {
+	for len(includes) > 0 {
 		max := 0
 		max_loc := 0
 
 		for i, c := range pool {
-			v := 3*len(matches(c, winners)) - len(c)
+			v := 3*len(matches(c, includes)) - len(c)
 
 			if v > max {
 				max = v
@@ -28,28 +28,28 @@ func findregex(winners, losers []string) string {
 		cover = append(cover, best)
 
 		var leftover []string
-		best_matches := matches(best, winners)
+		best_matches := matches(best, includes)
 
-		for _, winner := range winners {
+		for _, include := range includes {
 			found := false
 
-			for _, matched_winner := range best_matches {
-				if winner == matched_winner {
+			for _, matched_include := range best_matches {
+				if include == matched_include {
 					found = true
 				}
 			}
 
 			if found == false {
-				leftover = append(leftover, winner)
+				leftover = append(leftover, include)
 			}
 		}
 
-		winners = leftover
+		includes = leftover
 
 		var leftoverpool []string
 
 		for _, c := range pool {
-			if len(matches(c, winners)) > 0 {
+			if len(matches(c, includes)) > 0 {
 				leftoverpool = append(leftoverpool, c)
 			}
 		}
@@ -60,18 +60,18 @@ func findregex(winners, losers []string) string {
 	return strings.Join(cover, "|")
 }
 
-func regex_components(winners, losers []string) []string {
+func regex_components(includes, excludes []string) []string {
 	var parts []string
 	var wholes []string
 
-	for _, winner := range winners {
-		wholes = append(wholes, "^"+winner+"$")
+	for _, include := range includes {
+		wholes = append(wholes, "^"+include+"$")
 	}
 
 	for _, w := range wholes {
 		for _, p := range subparts(w) {
 			for _, d := range dotify(p) {
-				if m := matches(d, losers); len(m) == 0 {
+				if m := matches(d, excludes); len(m) == 0 {
 					parts = append(parts, d)
 				}
 			}
