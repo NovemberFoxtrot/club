@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"regexp"
 	"strings"
@@ -106,7 +107,6 @@ func regex_components(winners, losers []string) []string {
 
 	for _, winner := range winners {
 		wholes = append(wholes, "^"+winner+"$")
-		parts = append(parts, "^"+winner+"$")
 	}
 
 	for _, w := range wholes {
@@ -119,7 +119,11 @@ func regex_components(winners, losers []string) []string {
 		}
 	}
 
-	return parts
+	for _, p := range parts {
+		wholes = append(wholes, p)
+	}
+
+	return wholes
 }
 
 func subparts(word string) []string {
@@ -129,11 +133,12 @@ func subparts(word string) []string {
 
 	var results []string
 
-	for _, n := range []int{1, 2, 3, 4} {
+	for n := 1; n <= 4; n++ {
 		for i := 0; i < len(word); i++ {
 			if i+n > len(word) {
 				continue
 			}
+
 			results = append(results, word[i:i+n])
 		}
 	}
@@ -184,5 +189,14 @@ func matches(regex string, strings []string) []string {
 }
 
 func main() {
-	verify("a|b", []string{"ark", "b", "c"}, []string{"art", "b", "x", "c"})
+	var include = flag.String("include", "a b c", "what the regexp should match")
+	var exclude = flag.String("exclude", "x y z", "what the regexp should not match")
+
+	flag.Parse()
+
+	includeRegexp := findregex(strings.Split(*include, ","), strings.Split(*exclude, ","))
+	excludeRegexp := findregex(strings.Split(*exclude, ","), strings.Split(*include, ","))
+
+	fmt.Println("regex for includes", includeRegexp)
+	fmt.Println("regex for excludes", excludeRegexp)
 }

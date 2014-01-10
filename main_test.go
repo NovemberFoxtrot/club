@@ -2,6 +2,7 @@ package main
 
 import (
 	"testing"
+	"fmt"
 )
 
 func TestMatches(t *testing.T) {
@@ -83,8 +84,11 @@ func TestSubParts(t *testing.T) {
 		input    string
 		expected []string
 	}{
+		{"^it$", []string{"^", "i", "t", "$", "^i", "it", "t$", "^it", "it$", "^it$"}},
 		{"the", []string{"t", "h", "e", "th", "he", "the"}},
 		{"this", []string{"t", "h", "i", "s", "th", "hi", "is", "thi", "his", "this"}},
+		// {"^win$", []string{"^win", "$", "i", "win", "n$", "^wi", "wi", "^w", "w", "in", "in$", "n", "win$", "^"}},
+		{"^win$", []string{"^", "w", "i", "n", "$", "^w", "wi", "in", "n$", "^wi", "win", "in$", "^win", "win$"}},
 	}
 
 	for _, test := range tests {
@@ -92,24 +96,25 @@ func TestSubParts(t *testing.T) {
 
 		if len(actual) != len(test.expected) {
 			t.Errorf("expected: %v actual: %v", test.expected, actual)
-			break
+			continue
 		}
 
 		for i := range test.expected {
 			if actual[i] != test.expected[i] {
 				t.Errorf("expected: %v actual: %v", test.expected, actual)
-				break
+				continue
 			}
 		}
 	}
 }
 
-func TestCandidateComponents(t *testing.T) {
+func TestRegexComponents(t *testing.T) {
 	tests := []struct {
 		winners  []string
 		losers   []string
 		expected []string
 	}{
+		// {[]string{"win"}, []string{"losers", "bin", "won"}, []string{"^win$", "^win", "^wi.", "wi.", "wi", "^wi", "win$", "win", "wi.$"}},
 		{[]string{"win"}, []string{"losers", "bin", "won"}, []string{"^win$", "wi", "^wi", "win", "wi.", "^win", "^wi.", "win$", "wi.$"}},
 	}
 
@@ -142,6 +147,10 @@ func TestFindRegex(t *testing.T) {
 
 	nfl_in := []string{"colts", "saints", "chargers", "49ers", "seahawks", "patriots", "panthers", "broncos", "chiefs", "eagles", "bengals", "packers"}
 	nfl_out := []string{"jets", "dolphins", "bills", "steelers", "ravens", "browns", "titans", "jaguars", "texans", "raiders", "cowboys", "giants", "redskins", "bears", "lions", "vikings", "falcons", "buccaneers", "cardinals", "rams"}
+
+	for _, v := range nfl_out {
+	fmt.Println(v)
+	}
 
 	tests := []struct {
 		winners  []string
