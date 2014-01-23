@@ -88,7 +88,7 @@ func regex_components(includes, excludes []string) []string {
 func subparts(word string) []string {
 	var results []string
 
-	for n := 1; n <= 4; n++ {
+	for n := 1; n <= 5; n++ {
 		for i := 0; i < len(word); i++ {
 			if i+n > len(word) {
 				continue
